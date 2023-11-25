@@ -14,7 +14,7 @@ def convert_text_to_image(input_text):
 
     # DALL-E API를 통해 이미지를 요청하는 부분
     response = openai.Image.create(
-        prompt = f'a website with {input_text}',
+        prompt = f'a wireframe of website with {input_text}',
         n = num,
         size = '1024x1024'
     )

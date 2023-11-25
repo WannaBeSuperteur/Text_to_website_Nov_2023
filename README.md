@@ -1,4 +1,5 @@
 # Text_to_website_Nov_2023
+current version : **v0.1**
 
 ## 버전 관리
 ### v0.1

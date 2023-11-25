@@ -6,5 +6,12 @@ if __name__ == '__main__':
     print('input text for creating website :')
     input_text = input()
 
-    # 텍스트를 이미지로, 이미지를 웹사이트로 변환
-    t2w.convert_text_to_website(input_text)
+    # 텍스트를 이미지 (총 5장) 로, 각 이미지를 웹사이트의 HTML 코드로 변환
+    html_codes = t2w.convert_text_to_website(input_text)
+    input_text_with_underbar = input_text.replace(' ', '_')
+
+    # HTML 코드 (총 5개 생성) 쓰고 파일로 저장
+    for idx, code in enumerate(html_codes):
+        f = open(f'website_{input_text_with_underbar}_{idx}.html', 'w')
+        f.write(code)
+        f.close()

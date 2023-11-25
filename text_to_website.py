@@ -16,11 +16,11 @@ header = {
     'Authorization': f'Bearer {apikey}'
 }
 
+num = 5 # 이미지 개수 (1분당 5장 초과의 경우 오류 발생)
+
 
 # 입력 텍스트를 5장의 이미지로 변환하는 함수
 def convert_text_to_image(input_text):
-
-    num = 5 # 이미지 개수 (1분당 5장 초과의 경우 오류 발생)
 
     # DALL-E API를 통해 이미지를 요청하는 부분
     response = openai.Image.create(
@@ -32,14 +32,11 @@ def convert_text_to_image(input_text):
     # 생성된 이미지의 링크 목록
     image_urls = [response['data'][x]['url'] for x in range(num)]
 
-    # 생성된 이미지의 링크 출력 및 반환
-    for i in range(num):
-        print(f'\nresult image url:\n{image_urls[i]}')
-
+    # 생성된 이미지의 링크 반환
     return image_urls
 
 
-# 이미지를 읽어서 웹사이트로 변환하는 함수
+# 5장의 각 이미지를 읽어서 웹사이트의 HTML 코드로 변환하는 함수
 # gpt-4-vision-preview API로 이미지에 대한 HTML 코드를 요청해서 결과 읽기
 def convert_image_to_website(image_urls):
 
@@ -69,25 +66,37 @@ def convert_image_to_website(image_urls):
         }
 
         response = requests.post(url=openai_api_url, headers=header, json=payload)
-        print(f'\nresponse:\n{response.json()}')
+        response = response.json()
+        answer_content = response['choices'][0]['message']['content']
 
-        return response.json()
+        if '```' in answer_content:
+            return answer_content.split('```')[1]
+
+        else:
+            return ''
+        
 
     # 각 URL마다 OpenAI API (gpt-4-vision-preview) 로 요청한 HTML 코드 받기
-    resps = []
+    html_codes = []
     
-    for url in image_urls:
-        resp = request_to_openai_api(url)
-        resps.append(resp)
+    for idx, url in enumerate(image_urls):
+        print(f'{idx} / {num}')
+        
+        html_code = request_to_openai_api(url)
+        html_codes.append(html_code)
 
-    return resps
+    return html_codes
 
 
-# 입력 텍스트를 이미지로 바꾸고, 그 이미지를 웹사이트로 변환
+# 입력 텍스트를 이미지로 바꾸고, 그 이미지를 웹사이트의 HTML 코드로 변환
 def convert_text_to_website(input_text):
 
     # 텍스트 -> 이미지 변환
+    print('converting text to image ...')
     image_urls = convert_text_to_image(input_text)
 
-    # 이미지 -> 웹사이트 변환
+    # 이미지 (5장) -> 웹사이트 (총 5개) HTML 코드 변환
+    print('converting images to website codes ...')
     website_html_codes = convert_image_to_website(image_urls)
+
+    return website_html_codes

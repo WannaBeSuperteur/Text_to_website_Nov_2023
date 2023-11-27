@@ -10,8 +10,16 @@ if __name__ == '__main__':
     html_codes = t2w.convert_text_to_website(input_text)
     input_text_with_underbar = input_text.replace(' ', '_')
 
-    # HTML 코드 (총 5개 생성) 쓰고 파일로 저장
+    # HTML 코드 (최대 5개 생성) 쓰고 파일로 저장
     for idx, code in enumerate(html_codes):
-        f = open(f'website_{input_text_with_underbar}_{idx}.html', 'w')
-        f.write(code)
-        f.close()
+        if len(code) < 10:
+            print(f'({idx}) HTML code is empty or too short.')
+
+        else:
+            try:
+                f = open(f'website_{input_text_with_underbar}_{idx}.html', 'w')
+                f.write(code)
+                f.close()
+
+            except Exception as e:
+                print(f'error: {e}')

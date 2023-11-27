@@ -45,36 +45,44 @@ def convert_image_to_website(image_urls):
 
     # OpenAI API로 요청하는 함수
     def request_to_openai_api(url):
-        payload = {
-            'model': 'gpt-4-vision-preview',
-            'messages': [
-                {
-                    'role': 'user',
-                    'content': [
+        try_count = 0
+
+        while try_count < 10:
+            try:
+                payload = {
+                    'model': 'gpt-4-vision-preview',
+                    'messages': [
                         {
-                            'type': 'text',
-                            'text': prompt
-                        },
-                        {
-                            'type': 'image_url',
-                            'image_url': {'url': url}
+                            'role': 'user',
+                            'content': [
+                                {
+                                    'type': 'text',
+                                    'text': prompt
+                                },
+                                {
+                                    'type': 'image_url',
+                                    'image_url': {'url': url}
+                                }
+                            ]
                         }
-                    ]
+                    ],
+                    'max_tokens': 3585
                 }
-            ],
-            'max_tokens': 3585
-        }
 
-        response = requests.post(url=openai_api_url, headers=header, json=payload)
-        response = response.json()
-        answer_content = response['choices'][0]['message']['content']
+                response = requests.post(url=openai_api_url, headers=header, json=payload)
+                response = response.json()
+                answer_content = response['choices'][0]['message']['content']
 
-        if '```' in answer_content:
-            return answer_content.split('```')[1]
+                if '```' in answer_content:
+                    return answer_content.split('```')[1]
 
-        else:
-            return ''
-        
+                else:
+                    return ''
+
+            except Exception as e:
+                print(f'error: {e}')
+                try_count += 1
+                
 
     # 각 URL마다 OpenAI API (gpt-4-vision-preview) 로 요청한 HTML 코드 받기
     html_codes = []

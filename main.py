@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
         else:
             try:
-                f = open(f'website_{input_text_with_underbar}_{idx}.html', 'w')
+                f = open(f'website_{input_text_with_underbar}_{idx}.html', 'w', encoding='cp949')
                 f.write(code)
                 f.close()
 

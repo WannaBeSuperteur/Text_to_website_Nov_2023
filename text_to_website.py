@@ -24,7 +24,7 @@ def convert_text_to_image(input_text):
 
     # DALL-E API를 통해 이미지를 요청하는 부분
     response = openai.Image.create(
-        prompt = f'a wireframe of website with {input_text}',
+        prompt = f'Draw a detailed wireframe of website that shows {input_text}. Draw in detail so that web developers can create website.',
         n = num,
         size = '1024x1024'
     )
@@ -38,9 +38,9 @@ def convert_text_to_image(input_text):
 
 # 5장의 각 이미지를 읽어서 웹사이트의 HTML 코드로 변환하는 함수
 # gpt-4-vision-preview API로 이미지에 대한 HTML 코드를 요청해서 결과 읽기
-def convert_image_to_website(image_urls):
+def convert_image_to_website(image_urls, input_text):
 
-    prompt = 'Write an HTML code for the website with the wireframe image.'
+    prompt = f'Write an HTML code for the website with the wireframe image. The website shoud show {input_text}.'
     openai_api_url = 'https://api.openai.com/v1/chat/completions'
 
     # OpenAI API로 요청하는 함수
@@ -97,6 +97,6 @@ def convert_text_to_website(input_text):
 
     # 이미지 (5장) -> 웹사이트 (총 5개) HTML 코드 변환
     print('converting images to website codes ...')
-    website_html_codes = convert_image_to_website(image_urls)
+    website_html_codes = convert_image_to_website(image_urls, input_text)
 
     return website_html_codes

@@ -7,6 +7,7 @@ apikey = f.readlines()[0] # OpenAI API KEY
 openai.api_key = apikey
 f.close()
 
+import time
 import os
 import base64
 import requests
@@ -44,11 +45,14 @@ def convert_image_to_website(image_urls, input_text):
     openai_api_url = 'https://api.openai.com/v1/chat/completions'
 
     # OpenAI API로 요청하는 함수
-    def request_to_openai_api(url):
+    def request_to_openai_api(url, prompt):
         try_count = 0
 
+        # 최대 10번 시도
         while try_count < 10:
             try:
+
+                # GPT-4 API에 전달하는 query
                 payload = {
                     'model': 'gpt-4-vision-preview',
                     'messages': [
@@ -71,6 +75,11 @@ def convert_image_to_website(image_urls, input_text):
 
                 response = requests.post(url=openai_api_url, headers=header, json=payload)
                 response = response.json()
+
+                # response에 'choices'가 없으면 오류 (예: 1분당 5회 초과 호출)
+                assert 'choices' in response
+
+                # GPT-4 API의 response로부터 답변 받아오기
                 answer_content = response['choices'][0]['message']['content']
 
                 if '```' in answer_content:
@@ -79,7 +88,10 @@ def convert_image_to_website(image_urls, input_text):
                 else:
                     return ''
 
+            # 오류 발생 시마다 시도 횟수 증가
             except Exception as e:
+                time.sleep(3)
+                
                 print(f'error: {e}')
                 try_count += 1
                 
@@ -90,7 +102,7 @@ def convert_image_to_website(image_urls, input_text):
     for idx, url in enumerate(image_urls):
         print(f'{idx} / {num}')
         
-        html_code = request_to_openai_api(url)
+        html_code = request_to_openai_api(url, prompt)
         html_codes.append(html_code)
 
     return html_codes

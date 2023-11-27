@@ -1,4 +1,5 @@
 import text_to_website as t2w
+import os
 
 if __name__ == '__main__':
 
@@ -12,14 +13,24 @@ if __name__ == '__main__':
 
     # HTML 코드 (최대 5개 생성) 쓰고 파일로 저장
     for idx, code in enumerate(html_codes):
+
+        # HTML code가 짧으면 오류일 수 있으므로 파일로 쓰지 않음
         if len(code) < 10:
             print(f'({idx}) HTML code is empty or too short.')
 
         else:
+
+            # 파일로 쓰기
+            filename = f'website_{input_text_with_underbar}_{idx}.html'
+            
             try:
-                f = open(f'website_{input_text_with_underbar}_{idx}.html', 'w', encoding='cp949')
+                f = open(filename, 'w', encoding='utf-8')
                 f.write(code)
                 f.close()
 
+            # 파일 생성 후 쓰는 중 오류 발생 시 파일 삭제
             except Exception as e:
-                print(f'error: {e}')
+                f.close()
+                os.remove(filename)
+                
+                print(f'error when writing file: {e}')

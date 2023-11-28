@@ -7,6 +7,8 @@ current version : **v1.1**
 ## 실행 및 테스트 방법
 ![실행 및 테스트 방법](./images/실행_및_테스트_방법.png)
 
+* API KEY 링크 : [바로가기](https://platform.openai.com/api-keys)
+
 ## 버전 관리
 ### v1.1
 * 2023.11.28 12:10 (KST)

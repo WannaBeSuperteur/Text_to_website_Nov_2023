@@ -83,7 +83,7 @@ def convert_image_to_website(image_urls, input_text):
                 response = response.json()
 
                 # response에 'choices'가 없으면 오류 (예: 1분당 5회 초과 호출)
-                assert 'choices' in response
+                assert 'choices' in response, str(response)
 
                 # GPT-4 API의 response로부터 답변 받아오기
                 answer_content = response['choices'][0]['message']['content']
